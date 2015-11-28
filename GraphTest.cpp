@@ -80,21 +80,43 @@ SCENARIO ( "Graph operations work correctly" ) {
 			}
 		}
 
+		WHEN ( "I add a new node" ) {
+			g.addNode(10);
+
+			THEN ( "Sizes and empty status should reflect the new node" ) {
+				REQUIRE( g.getNumberOfNodes() == 1 );
+				REQUIRE( g.getNumberOfEdges() == 0 );
+				REQUIRE( !g.isEmpty() );
+			}
+		}
+
+		WHEN ( "I search for the last added node id" ) {
+			
+			THEN ( "I should find a valid element" ) {
+				REQUIRE ( g.hasNodeWithId(1) );
+				REQUIRE ( g.searchNodeById(1) != NULL );
+			}
+		}
+
+		WHEN ( "I search for the last added node value" ) {
+			
+			THEN ( "I should find a valid element" ) {
+				REQUIRE ( g.hasNodeWithValue(10) );
+				REQUIRE ( g.searchNodeByValue(10) != NULL );
+			}
+		}
+
+		WHEN ( "I remove the last node" ) {
+			g.removeNodeByValue(10);
+
+			THEN ( "Sizes and empty status should return to initial state" ) {
+				REQUIRE( g.getNumberOfNodes() == 0 );
+				REQUIRE( g.getNumberOfEdges() == 0 );
+				REQUIRE( g.isEmpty() );
+			}
+		}
+
 		/*WHEN ( "" ) {
-
-			THEN ( "" ) {
-	
-			}
-		}
-
-		WHEN ( "" ) {
-
-			THEN ( "" ) {
-	
-			}
-		}
-
-		WHEN ( "" ) {
 
 			THEN ( "" ) {
 	

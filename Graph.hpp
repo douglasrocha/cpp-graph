@@ -103,7 +103,7 @@ protected:
 public:
 	Graph(bool isDirected = false) {
 		setIsDirected(isDirected);
-		_id = 0;
+		_id = 1;
 	}
 
 	~Graph() {
@@ -299,11 +299,11 @@ public:
 	}
 
 	bool hasNodeWithValue(llint nodeValue) {
-		return searchNodeByValue(nodeValue) == NULL;
+		return searchNodeByValue(nodeValue) != NULL;
 	}
 
 	bool hasNodeWithId(ullint nodeId) {
-		return searchNodeById(nodeId) == NULL;
+		return searchNodeById(nodeId) != NULL;
 	}
 
 	void addEdgeByValue(llint sourceValue, llint destinationValue, double weight) {
