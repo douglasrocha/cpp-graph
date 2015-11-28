@@ -314,4 +314,60 @@ protected:
 			_edges.push_back(newEdge);
 		}
 	}
+
+	void removeEdgesByWeight(double weight) {
+		list<GraphEdge*>::iterator positionEdge = _edges.begin();
+		
+		while (positionEdge != _edges.end()) {
+			if ( (*positionEdge)->getWeight() == weight ) {
+				delete *positionEdge;
+				*positionEdge = NULL;
+				_edges.erase(positionEdge);
+			}
+
+			positionEdge++;
+		}
+	}
+
+	void removeEdgesByNodeValuePath(llint sourceValue, llint destinationValue) {
+		const GraphNode* sourceNode;
+		const GraphNode* destinationNode;
+		list<GraphEdge*>::iterator positionEdge = _edges.begin();
+
+		while (positionEdge != _edges.end()) {
+			sourceNode = (*positionEdge)->getSource();
+			destinationNode = (*positionEdge)->getDestination();
+			
+			if ( (sourceNode->getValue() == sourceValue) 
+				|| (destinationNode->getValue() == destinationValue) ) {
+				
+				delete *positionEdge;
+				*positionEdge = NULL;
+				_edges.erase(positionEdge);
+			}
+
+			positionEdge++;
+		}
+	}
+
+	void removeEdgeByNodeIdPath(ullint sourceId, ullint destinationId) {
+		const GraphNode* sourceNode;
+		const GraphNode* destinationNode;
+		list<GraphEdge*>::iterator positionEdge = _edges.begin();
+		
+		while (positionEdge != _edges.end()) {
+			sourceNode = (*positionEdge)->getSource();
+			destinationNode = (*positionEdge)->getDestination();
+			
+			if ( (sourceNode->getId() == sourceId) 
+				|| (destinationNode->getId() == destinationId) ) {
+
+				delete *positionEdge;
+				*positionEdge = NULL;
+				_edges.erase(positionEdge);
+			}
+
+			positionEdge++;
+		}
+	}
 }
