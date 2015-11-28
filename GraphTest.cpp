@@ -34,5 +34,33 @@ SCENARIO ( "Graph nodes work correctly" ) {
 			}
 		}
 	}
+}
 
+
+SCENARIO ( "Graph edges work correctly" ) {
+
+	GIVEN ( "A graph edge with initial values" ) {
+		GraphNode* source = new GraphNode(1, 10);
+		GraphNode* destination = new GraphNode(2, 20);
+		GraphEdge edge(source, destination, 100);
+
+		WHEN ( "I get the values of attributes of edge" ) {
+			THEN ( "They look like the initial values I set" ) {
+				REQUIRE( edge.getSource() == source );
+				REQUIRE( edge.getDestination() == destination );
+				REQUIRE( edge.getWeight() == 100 );
+			}
+		}
+
+		WHEN ( "I set a new value for its weight" ) {
+			edge.setWeight(200);
+
+			THEN ( "When I get the edge's edge, its weight should be the new one" ) {
+				REQUIRE( edge.getWeight() == 200 );
+			}
+		}
+
+		delete source;
+		delete destination;
+	}
 }
