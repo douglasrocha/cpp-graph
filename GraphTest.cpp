@@ -92,7 +92,7 @@ SCENARIO ( "Graph attributes" ) {
 	}
 }
 
-SCENARIO ( "Graph nodes management" ) {
+SCENARIO ( "Graph basic nodes management" ) {
 
 	GIVEN ( "An empty graph" ) {
 		Graph g;
@@ -176,5 +176,43 @@ SCENARIO ( "Graph nodes management" ) {
 				REQUIRE( !g.isEmpty() );
 			}
 		}
+	}
+}
+
+SCENARIO ( "Graph max/least values of nodes" ) {
+
+	GIVEN ( "A graph with some pre-defined nodes" ) {
+		Graph g;
+		for (int i = -10; i <= 10; i++) g.addNode(i);
+		
+		
+		WHEN ( "I search for biggest value of node" ) {
+		
+			THEN ( "I find a valid node" ) {
+				REQUIRE( g.hasNodeWithValue(10) );
+			}
+		}
+		
+		WHEN ( "I get the biggest value" ) {
+
+			THEN ( "I find the biggest value I inserted" ) {
+				REQUIRE( g.getNodesMaxValue() == 10 );
+			}
+		}
+		
+		WHEN ( "I search for least value of node" ) {
+			THEN ( "I find a valid node" ) {
+				REQUIRE( g.hasNodeWithValue(-10) );
+			}
+		}
+		
+		
+		WHEN ( "I get the smallest value" ) {
+			
+			THEN ( "I find the least value i inserted" ) {
+				REQUIRE( g.getNodesLeastValue() == -10 );
+			}
+		}
+		
 	}
 }

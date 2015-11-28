@@ -236,40 +236,34 @@ public:
 		}
 	}
 
-	void removeNodeLeastValue() {
-		if (isEmpty()) return;
-
+	llint getNodesLeastValue() {
 		llint leastValue = LLONG_MAX;
 
-		list<GraphNode*>::iterator positionNode = _nodes.begin();
+		for (GraphNode* currentNode : _nodes)
+			if (currentNode->getValue() < leastValue)
+				leastValue = currentNode->getValue();
+				
+		return leastValue;
+	}
 
-		while (positionNode != _nodes.end()) {
-			if ( (*positionNode)->getValue() < leastValue ) {
-				leastValue = (*positionNode)->getValue();
-			}
-			
-			positionNode++;
-		}
+	void removeNodeLeastValue() {
+		if (isEmpty()) return;
+		removeNodeByValue(getNodesLeastValue());
+	}
 
-		removeNodeByValue(leastValue);
+	llint getNodesMaxValue() {
+		llint maxValue = LLONG_MIN;
+
+		for (GraphNode* currentNode : _nodes)
+			if (currentNode->getValue() > maxValue)
+				maxValue = currentNode->getValue();
+				
+		return maxValue;
 	}
 
 	void removeNodeMaxValue() {
 		if (isEmpty()) return;
-
-		llint maxValue = LLONG_MIN;
-
-		list<GraphNode*>::iterator positionNode = _nodes.begin();
-
-		while (positionNode != _nodes.end()) {
-			if ( (*positionNode)->getValue() > maxValue ) {
-				maxValue = (*positionNode)->getValue();
-			}
-			
-			positionNode++;
-		}
-
-		removeNodeByValue(maxValue);
+		removeNodeByValue(getNodesMaxValue());
 	}
 
 	GraphNode* searchNodeByValue(llint nodeValue) {
