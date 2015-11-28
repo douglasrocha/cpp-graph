@@ -100,6 +100,7 @@ protected:
 	bool _isDirected;
 	ullint _id;
 
+public:
 	Graph(bool isDirected = false) {
 		setIsDirected(isDirected);
 		_id = 0;

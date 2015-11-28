@@ -45,6 +45,7 @@ SCENARIO ( "Graph edges work correctly" ) {
 		GraphEdge edge(source, destination, 100);
 
 		WHEN ( "I get the values of attributes of edge" ) {
+
 			THEN ( "They look like the initial values I set" ) {
 				REQUIRE( edge.getSource() == source );
 				REQUIRE( edge.getDestination() == destination );
@@ -55,7 +56,7 @@ SCENARIO ( "Graph edges work correctly" ) {
 		WHEN ( "I set a new value for its weight" ) {
 			edge.setWeight(200);
 
-			THEN ( "When I get the edge's edge, its weight should be the new one" ) {
+			THEN ( "When I get the edge's weight, it should be the new one" ) {
 				REQUIRE( edge.getWeight() == 200 );
 			}
 		}
@@ -63,4 +64,49 @@ SCENARIO ( "Graph edges work correctly" ) {
 		delete source;
 		delete destination;
 	}
+}
+
+SCENARIO ( "Graph operations work correctly" ) {
+
+	GIVEN ( "A new empty graph" ) {
+		Graph g;		
+
+		WHEN ( "I get its size and check if it's empty" ) {
+
+			THEN ( "Size should be 0 and it should be empty" ) {
+				REQUIRE( g.getNumberOfNodes() == 0 );
+				REQUIRE( g.getNumberOfEdges() == 0 );
+				REQUIRE( g.isEmpty() );
+			}
+		}
+
+		/*WHEN ( "" ) {
+
+			THEN ( "" ) {
+	
+			}
+		}
+
+		WHEN ( "" ) {
+
+			THEN ( "" ) {
+	
+			}
+		}
+
+		WHEN ( "" ) {
+
+			THEN ( "" ) {
+	
+			}
+		}
+
+		WHEN ( "" ) {
+
+			THEN ( "" ) {
+	
+			}
+		}*/
+	}
+
 }
