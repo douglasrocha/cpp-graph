@@ -66,7 +66,7 @@ SCENARIO ( "Graph edges work correctly" ) {
 	}
 }
 
-SCENARIO ( "Graph operations work correctly" ) {
+SCENARIO ( "Graph attributes" ) {
 
 	GIVEN ( "A new empty graph" ) {
 		Graph g;		
@@ -79,7 +79,7 @@ SCENARIO ( "Graph operations work correctly" ) {
 				REQUIRE( g.isEmpty() );
 			}
 		}
-
+		
 		WHEN ( "I add a new node" ) {
 			g.addNode(10);
 
@@ -89,8 +89,16 @@ SCENARIO ( "Graph operations work correctly" ) {
 				REQUIRE( !g.isEmpty() );
 			}
 		}
+	}
+}
 
-		WHEN ( "I search for the last added node id" ) {
+SCENARIO ( "Graph nodes management" ) {
+
+	GIVEN ( "An empty graph" ) {
+		Graph g;
+		
+		WHEN ( "I add a node and search for its id" ) {
+			g.addNode(10);
 			
 			THEN ( "I should find a valid element" ) {
 				REQUIRE ( g.hasNodeWithId(1) );
@@ -98,37 +106,75 @@ SCENARIO ( "Graph operations work correctly" ) {
 			}
 		}
 
-		WHEN ( "I search for the last added node value" ) {
+		WHEN ( "I add a node and search for its value" ) {
+			g.addNode(20);
 			
 			THEN ( "I should find a valid element" ) {
-				REQUIRE ( g.hasNodeWithValue(10) );
-				REQUIRE ( g.searchNodeByValue(10) != NULL );
+				REQUIRE ( g.hasNodeWithValue(20) );
+				REQUIRE ( g.searchNodeByValue(20) != NULL );
 			}
 		}
 
-		WHEN ( "I remove the last node" ) {
-			g.removeNodeByValue(10);
-
-			THEN ( "Sizes and empty status should return to initial state" ) {
-				REQUIRE( g.getNumberOfNodes() == 0 );
+		WHEN ( "I add somes nodes" ) {
+			for (int i = 0; i < 100; i++) {
+				g.addNode(i*100);
+			}			
+			
+			THEN ( "Sizes and empty status should reflect the new nodes" ) {
+				REQUIRE( g.getNumberOfNodes() == 100 );
 				REQUIRE( g.getNumberOfEdges() == 0 );
-				REQUIRE( g.isEmpty() );
+				REQUIRE( !g.isEmpty() );
 			}
 		}
+		
+		WHEN ( "I add somes nodes" ) {
+			for (int i = 0; i < 100; i++) {
+				g.addNode(i*100);
+			}			
+			
+			THEN ( "I should be able to get all of them by id and value" ) {
+				for (int i = 0; i < 100; i++) {
+					REQUIRE( g.hasNodeWithId(i+1) );
+					REQUIRE( g.searchNodeById(i+1) != NULL );
+				}
 
-		/*WHEN ( "" ) {
-
-			THEN ( "" ) {
-	
+				for (int i = 0; i < 100; i++) {
+					REQUIRE( g.hasNodeWithValue(i*100) );
+					REQUIRE( g.searchNodeByValue(i*100) != NULL );
+				}
 			}
 		}
-
-		WHEN ( "" ) {
-
-			THEN ( "" ) {
-	
+		
+		WHEN ( "I add somes nodes and remove half" ) {
+			for (int i = 0; i < 100; i++) {
+				g.addNode(i*100);
+			}			
+			
+			for (int i = 0; i < 100; i += 2) {
+				g.removeNodeById(i+1);
 			}
-		}*/
+			
+			THEN ( "Sizes and empty status should reflect half of the nodes" ) {
+				REQUIRE( g.getNumberOfNodes() == 50 );
+				REQUIRE( g.getNumberOfEdges() == 0 );
+				REQUIRE( !g.isEmpty() );
+			}
+		}
+		
+		WHEN ( "I add somes nodes and remove invalid ids" ) {
+			for (int i = 0; i < 100; i++) {
+				g.addNode(i*100);
+			}			
+			
+			for (int i = 100; i < 200; i++) {
+				g.removeNodeById(i+1);
+			}
+			
+			THEN ( "Sizes and empty status should reflect still all the nodes" ) {
+				REQUIRE( g.getNumberOfNodes() == 100 );
+				REQUIRE( g.getNumberOfEdges() == 0 );
+				REQUIRE( !g.isEmpty() );
+			}
+		}
 	}
-
 }

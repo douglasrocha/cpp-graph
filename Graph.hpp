@@ -103,7 +103,7 @@ protected:
 public:
 	Graph(bool isDirected = false) {
 		setIsDirected(isDirected);
-		_id = 1;
+		_id = 0;
 	}
 
 	~Graph() {
@@ -273,29 +273,33 @@ public:
 	}
 
 	GraphNode* searchNodeByValue(llint nodeValue) {
+		GraphNode* nodeOutput = NULL;
 		list<GraphNode*>::iterator positionNode = _nodes.begin();
 
 		while (positionNode != _nodes.end()) {
 			if ( (*positionNode)->getValue() == nodeValue ) {
-				return *positionNode;
+				nodeOutput = (*positionNode);
+				break;
 			}
 			positionNode++;
 		}
 
-		return NULL;
+		return nodeOutput;
 	}
 
 	GraphNode* searchNodeById(ullint nodeId) {
+		GraphNode* nodeOutput = NULL;
 		list<GraphNode*>::iterator positionNode = _nodes.begin();
 
 		while (positionNode != _nodes.end()) {
 			if ( (*positionNode)->getId() == nodeId ) {
-				return *positionNode;
+				nodeOutput = (*positionNode);
+				break;
 			}
 			positionNode++;
 		}
 
-		return NULL;
+		return nodeOutput;
 	}
 
 	bool hasNodeWithValue(llint nodeValue) {
