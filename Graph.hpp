@@ -198,42 +198,24 @@ public:
 		}
 	}
 
-	void removeNodeByValue(llint nodeValue) {
-		list<GraphEdge*>::iterator positionEdge = _edges.begin();
-		const GraphNode* source;
-		const GraphNode* destination;
-
-		// Remove edges where node is involved
-		while (positionEdge != _edges.end()) {
-			source = (*positionEdge)->getSource();
-			destination = (*positionEdge)->getDestination();
-			
-			if ( ( source->getValue() == nodeValue ) 
-				|| ( destination->getValue() == nodeValue ) ) {
-
-				delete *positionEdge;
-				*positionEdge = NULL;
-				_edges.erase(positionEdge);
-			}
-
-			positionEdge++;
+	bool removeNodeByValue(llint nodeValue) {
+		auto node = searchNodeByValue(nodeValue);
+		if (node != NULL) {
+			removeNodeById(node->getId());
+			return true;
 		}
+		
+		return false;
+	}
 
-		source = NULL;
-		destination = NULL;
-
-		// Remove nodes with the given id
-		list<GraphNode*>:: iterator positionNode = _nodes.begin();
-
-		while (positionNode != _nodes.end()) {
-			if ( (*positionNode)->getValue() == nodeValue ) {
-				delete *positionNode;
-				*positionNode = NULL;
-				_nodes.erase(positionNode);
-			}
-
-			positionNode++;
-		}
+	bool removeNodesByValue(llint nodeValue) {
+		auto isSuccess = false;
+		
+		// Not the best solution, but I will rarely use this
+		while (removeNodeByValue(nodeValue))
+			isSuccess = true;
+		
+		return isSuccess;
 	}
 
 	llint getNodesLeastValue() {

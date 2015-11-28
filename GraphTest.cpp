@@ -182,9 +182,8 @@ SCENARIO ( "Graph basic nodes management" ) {
 SCENARIO ( "Graph max/least values of nodes" ) {
 
 	GIVEN ( "A graph with some pre-defined nodes" ) {
-		Graph g;
+		Graph g;		
 		for (int i = -10; i <= 10; i++) g.addNode(i);
-		
 		
 		WHEN ( "I search for biggest value of node" ) {
 		
@@ -200,7 +199,17 @@ SCENARIO ( "Graph max/least values of nodes" ) {
 			}
 		}
 		
+		WHEN ( "I remove the biggest value" ) {
+			g.removeNodeMaxValue();
+			
+			THEN ( "I can't find the biggest value i inserted" ) {
+				REQUIRE( g.getNodesMaxValue() == 9 );
+				REQUIRE( !g.hasNodeWithValue(10) );
+			}
+		}
+		
 		WHEN ( "I search for least value of node" ) {
+		
 			THEN ( "I find a valid node" ) {
 				REQUIRE( g.hasNodeWithValue(-10) );
 			}
@@ -214,5 +223,25 @@ SCENARIO ( "Graph max/least values of nodes" ) {
 			}
 		}
 		
+		WHEN ( "I remove the smallest value" ) {
+			g.removeNodeLeastValue();
+			
+			THEN ( "I can't find the least value i inserted" ) {
+				REQUIRE( g.getNodesLeastValue() == -9 );
+				REQUIRE( !g.hasNodeWithValue(-10) );
+			}
+		}
+		
+		WHEN ( "Add nodes with all new same values and remove them" ) {
+			for (int i = 0; i < 1000; i++) {
+				g.addNode(555);
+			}
+			
+			g.removeNodesByValue(555);
+			
+			THEN ( "Count of nodes must return to count before adding them" ) {
+				REQUIRE( g.getNumberOfNodes() == 21 );
+			}
+		}
 	}
 }
