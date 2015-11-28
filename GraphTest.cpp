@@ -245,3 +245,56 @@ SCENARIO ( "Graph max/least values of nodes" ) {
 		}
 	}
 }
+
+SCENARIO ( "Graph edges management" ) {
+
+	GIVEN ( "A graph with some pre-defined nodes" ) {
+		Graph g;		
+		for (int i = 0; i < 10; i++) g.addNode(i);
+		
+		WHEN ( "I add a new edge" ) {
+			g.addEdge(1, 2, 12);
+		
+			THEN ( "The edge count must change" ) {
+				REQUIRE( g.getNumberOfEdges() == 1 );
+			}
+		}
+		
+		WHEN ( "I add multiple new edges" ) {
+			for (int i = 1; i <= 1000; i++) {
+				g.addEdge(i%10 + 1, (i+1)%10 + 1, i*10);
+			}
+		
+			THEN ( "The edge count must change" ) {
+				REQUIRE( g.getNumberOfEdges() == 1000 );
+			}
+		}
+		
+		WHEN ( "I add an edge with a specific weight and search for it by weight" ) {
+			g.addEdge(1,2, 51.0);
+			g.addEdge(1,2, 132.0);
+			g.addEdge(1,2, 47.0);
+		
+			THEN ( "I should find it" ) {
+				REQUIRE( g.searchEdgeByWeight(132.0) != NULL );
+				REQUIRE( g.searchEdgeByWeight(51.0) != NULL );
+				REQUIRE( g.searchEdgeByWeight(47.0) != NULL );
+			}
+		}
+		
+		WHEN ( "I add an edge with a specific weight, remove it and search for it by weight" ) {
+			g.addEdge(1,2, 51.0);
+			g.addEdge(1,2, 132.0);
+			g.addEdge(1,2, 47.0);
+			g.removeEdgesByWeight(51.0);
+			g.removeEdgesByWeight(47.0);
+			g.removeEdgesByWeight(132.0);
+		
+			THEN ( "I shouldn't find it" ) {
+				REQUIRE( g.searchEdgeByWeight(132.0) == NULL );
+				REQUIRE( g.searchEdgeByWeight(51.0) == NULL );
+				REQUIRE( g.searchEdgeByWeight(47.0) == NULL );
+			}
+		}
+	}
+}
