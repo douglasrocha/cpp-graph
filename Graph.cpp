@@ -1,14 +1,24 @@
-#include <list>
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <queue>
 #include <climits>
+#include <list>
+
+using namespace std;
 
 typedef long long llint;
-typedef unsigned llint ullint;
+typedef unsigned long long ullint;
 
 class GraphNode {
 
 private:
 	ullint  _id;
-	llint value;
+	llint _value;
 	bool _visit;
 	bool _hasParentId;
 	ullint _parentId;
@@ -29,11 +39,11 @@ public:
 	//----- Getters and Setters
 
 	//----- Id
-	ullint getId() { return _id; }
+	ullint getId() const { return _id; }
 	void setId(ullint id) { _id = id; }
 
 	//----- Value
-	llint getValue() { return _value; }
+	llint getValue() const { return _value; }
 	void setValue(llint value) { _value = value; }
 
 	//----- Visit
@@ -47,7 +57,7 @@ public:
 	//----- Parent Id
 	ullint getParentId() { return _parentId; }
 	void setParentId(ullint parentId) { _parentId = parentId; }
-}
+};
 
 class GraphEdge {
 private:
@@ -77,7 +87,7 @@ public:
 	//----- Weight
 	double getWeight() { return _weight; }
 	void setWeight(double weight) { _weight = weight; }
-}
+};
 
 class Graph {
 
@@ -295,7 +305,7 @@ protected:
 		return searchNodeById(nodeId) == NULL;
 	}
 
-	void addEdgeByValue(llint sourceValue, llint destinetionValue, double weight) {
+	void addEdgeByValue(llint sourceValue, llint destinationValue, double weight) {
 		const GraphNode* sourceNode = searchNodeByValue(sourceValue);
 		const GraphNode* destinationNode = searchNodeByValue(destinationValue);
 
@@ -305,7 +315,7 @@ protected:
 		}
 	}
 
-	void addEdgeById(ullint sourceId, ullint destinetionId, double weight) {
+	void addEdgeById(ullint sourceId, ullint destinationId, double weight) {
 		const GraphNode* sourceNode = searchNodeById(sourceId);
 		const GraphNode* destinationNode = searchNodeById(destinationId);
 
@@ -370,4 +380,4 @@ protected:
 			positionEdge++;
 		}
 	}
-}
+};
