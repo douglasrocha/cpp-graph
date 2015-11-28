@@ -260,4 +260,58 @@ protected:
 
 		removeNodeByValue(maxValue);
 	}
+
+	GraphNode* searchNodeByValue(llint nodeValue) {
+		list<GraphNode*>::iterator positionNode = _nodes.begin();
+
+		while (positionNode != _nodes.end()) {
+			if ( (*positionNode)->getValue() == nodeValue ) {
+				return *positionNode;
+			}
+			positionNode++;
+		}
+
+		return NULL;
+	}
+
+	GraphNode* searchNodeById(ullint nodeId) {
+		list<GraphNode*>::iterator positionNode = _nodes.begin();
+
+		while (positionNode != _nodes.end()) {
+			if ( (*positionNode)->getId() == nodeId ) {
+				return *positionNode;
+			}
+			positionNode++;
+		}
+
+		return NULL;
+	}
+
+	bool hasNodeWithValue(llint nodeValue) {
+		return searchNodeByValue(nodeValue) == NULL;
+	}
+
+	bool hasNodeWithId(ullint nodeId) {
+		return searchNodeById(nodeId) == NULL;
+	}
+
+	void addEdgeByValue(llint sourceValue, llint destinetionValue, double weight) {
+		const GraphNode* sourceNode = searchNodeByValue(sourceValue);
+		const GraphNode* destinationNode = searchNodeByValue(destinationValue);
+
+		if ( ( sourceNode != NULL ) && ( destinationNode != NULL ) ) {
+			GraphEdge* newEdge = new GraphEdge(sourceNode, destinationNode, weight);
+			_edges.push_back(newEdge);
+		}
+	}
+
+	void addEdgeById(ullint sourceId, ullint destinetionId, double weight) {
+		const GraphNode* sourceNode = searchNodeById(sourceId);
+		const GraphNode* destinationNode = searchNodeById(destinationId);
+
+		if ( ( sourceNode != NULL ) && ( destinationNode != NULL ) ) {
+			GraphEdge* newEdge = new GraphEdge(sourceNode, destinationNode, weight);
+			_edges.push_back(newEdge);
+		}
+	}
 }
