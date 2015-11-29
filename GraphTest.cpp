@@ -322,6 +322,49 @@ SCENARIO ( "Graph edges management" ) {
 	}
 }
 
+SCENARIO ( "Getting edges' according to tail and arrows" ) {
+	GIVEN ( "A graph with some pre-defined nodes and edges" ) {
+		Graph g;
+		for (int i = 1; i <= 5; i++) g.addNode(0);
+		for (int i = 2; i <= 5; i++) g.addEdge(1, i, 5*i);
+		g.addEdge(5, 2, 100);
+
+		WHEN ( "I look for the destinations of the first node" ) {
+			auto v = g.getEdgesWhereNodeIsSource(1);
+			sort(v.begin(), v.end(), [](GraphEdge* lhs, GraphEdge* rhs) {
+				return lhs->getDestination()->getId() < 
+					rhs->getDestination()->getId();
+			});
+			
+			THEN ( "I should find out all the other nodes that it points to" ) {
+				REQUIRE( v[0]->getDestination()->getId() == 2 );
+				REQUIRE( v[0]->getSource()->getId() == 1 );
+				REQUIRE( v[1]->getDestination()->getId() == 3 );
+				REQUIRE( v[1]->getSource()->getId() == 1 );
+				REQUIRE( v[2]->getDestination()->getId() == 4 );
+				REQUIRE( v[2]->getSource()->getId() == 1 );
+				REQUIRE( v[3]->getDestination()->getId() == 5 );
+				REQUIRE( v[3]->getSource()->getId() == 1 );
+			}
+		}
+
+		WHEN ( "I look for the sources of a given node" ) {
+			auto v = g.getEdgesWhereNodeIsDestination(2);
+			sort(v.begin(), v.end(), [](GraphEdge* lhs, GraphEdge* rhs) {
+				return lhs->getDestination()->getId() < 
+					rhs->getDestination()->getId();
+			});
+
+			THEN ( "I should find all the nodes that points to the given node" ) {
+				REQUIRE( v[0]->getDestination()->getId() == 2 );
+				REQUIRE( v[0]->getSource()->getId() == 1 );
+				REQUIRE( v[1]->getDestination()->getId() == 2 );
+				REQUIRE( v[1]->getSource()->getId() == 5 );
+			}
+		}
+	}
+}
+
 SCENARIO ( "Cleaning Graph" ) {
 	GIVEN ( "A graph with some nodes and edges" ) {
 		Graph g;

@@ -8,6 +8,7 @@
 #include <queue>
 #include <climits>
 #include <list>
+#include <functional>
 
 using namespace std;
 
@@ -339,4 +340,26 @@ public:
 			delete currentEdge;
 		}
 	}
+
+	vector<GraphEdge*> getEdgesWhereNodeIsSource(ullint nodeId) {
+		vector<GraphEdge*> destinations;
+
+		for (auto currentEdge : _edges)
+			if (currentEdge->getSource()->getId() == nodeId)
+				destinations.push_back(currentEdge);
+
+		return destinations;
+	}
+
+	vector<GraphEdge*> getEdgesWhereNodeIsDestination(ullint nodeId) {
+		vector<GraphEdge*> sources;
+		
+		for (auto currentEdge : _edges)
+			if (currentEdge->getDestination()->getId() == nodeId)
+				sources.push_back(currentEdge);
+
+		return sources;
+	}
+	
+	
 };
