@@ -360,6 +360,39 @@ public:
 
 		return sources;
 	}
-	
-	
+
+	typedef pair<int, int> pp;
+	map<ullint, llint> djikstra(int source) {
+		priority_queue<pp, vector<pp>, greater<pp>> costs;
+		map<ullint, llint> distances;
+		
+		for (auto currNode : _nodes) {
+			distances[currNode->getId()] = LLONG_MAX;
+		}
+		
+		distances[source] = 0;
+		costs.push(make_pair(0, source));
+
+		while (!costs.empty()) {
+			int nodeId = costs.top().second;
+			int dis = costs.top().first;
+			costs.pop();
+
+			if (dis > distances[nodeId]) continue;
+
+			for (auto currentEdge : getEdgesWhereNodeIsSource(nodeId)) {
+				auto newWeight = dis + currentEdge->getWeight();
+				auto oldWeight = distances[currentEdge->getDestination()->getId()];
+				auto destinationId = currentEdge->getDestination()->getId();
+
+				if (nodeId == source - 1 || newWeight < oldWeight) {
+					distances[destinationId] = newWeight;
+					costs.push(make_pair(newWeight, destinationId));
+				}
+			}
+		}
+
+		return distances;
+	}
+
 };

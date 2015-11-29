@@ -365,6 +365,29 @@ SCENARIO ( "Getting edges' according to tail and arrows" ) {
 	}
 }
 
+SCENARIO ( "Djikstra Shortest Path Algorithm" ) {
+	
+	GIVEN ( "A graph with some predefined nodes and edges" ) {
+		Graph g;
+		for (int i = 1; i <= 4; i++) g.addNode(i);
+		g.addEdge(1,2,24);
+		g.addEdge(1,4,20);
+		g.addEdge(3,1,3);
+		g.addEdge(4,3,12);
+		
+		WHEN ( "I look for the shortest path of a given node" ) {
+			auto shortestDistances = g.djikstra(1);
+
+			THEN ( "The shortest path should be calculated for every other node" ) {
+				REQUIRE( shortestDistances[1] == 0 );
+				REQUIRE( shortestDistances[2] == 24 );
+				REQUIRE( shortestDistances[3] == 3 );
+				REQUIRE( shortestDistances[4] == 15 );
+			}
+		}
+	}
+}
+
 SCENARIO ( "Cleaning Graph" ) {
 	GIVEN ( "A graph with some nodes and edges" ) {
 		Graph g;
