@@ -304,49 +304,39 @@ public:
 		return NULL;
 	}
 
-	void removeEdgesByWeight(double weight) {
-		
+	GraphEdge* searchEdgeByNodePath(ullint sourceId, ullint destinationId) {
+		for (auto currentEdge : _edges)
+			if (currentEdge->getSource()->getId() == sourceId
+				&& currentEdge->getDestination()->getId() == destinationId)
+				return currentEdge;
+
+		return NULL;
 	}
 
-	void removeEdgesByNodeValuePath(llint sourceValue, llint destinationValue) {
-		const GraphNode* sourceNode;
-		const GraphNode* destinationNode;
-		list<GraphEdge*>::iterator positionEdge = _edges.begin();
+	void removeEdgesByWeight(double weight) {
+		vector<GraphEdge*> edgesWithGivenWeight;
 
-		while (positionEdge != _edges.end()) {
-			sourceNode = (*positionEdge)->getSource();
-			destinationNode = (*positionEdge)->getDestination();
-			
-			if ( (sourceNode->getValue() == sourceValue) 
-				|| (destinationNode->getValue() == destinationValue) ) {
-				
-				delete *positionEdge;
-				*positionEdge = NULL;
-				_edges.erase(positionEdge);
-			}
+		for (auto currentEdge : _edges)
+			if (currentEdge->getWeight() == weight)
+				edgesWithGivenWeight.push_back(currentEdge);
 
-			positionEdge++;
+		for (auto currentEdge : edgesWithGivenWeight) {
+			_edges.remove(currentEdge);
+			delete currentEdge;
 		}
 	}
 
-	void removeEdgeByNodeIdPath(ullint sourceId, ullint destinationId) {
-		const GraphNode* sourceNode;
-		const GraphNode* destinationNode;
-		list<GraphEdge*>::iterator positionEdge = _edges.begin();
-		
-		while (positionEdge != _edges.end()) {
-			sourceNode = (*positionEdge)->getSource();
-			destinationNode = (*positionEdge)->getDestination();
-			
-			if ( (sourceNode->getId() == sourceId) 
-				|| (destinationNode->getId() == destinationId) ) {
+	void removeEdgeByNodePath(ullint sourceId, ullint destinationId) {
+		vector<GraphEdge*> edgesWithGivenNodePath;
 
-				delete *positionEdge;
-				*positionEdge = NULL;
-				_edges.erase(positionEdge);
-			}
+		for (auto currentEdge : _edges)
+			if (currentEdge->getSource()->getId() == sourceId
+				&& currentEdge->getDestination()->getId() == destinationId)
+				edgesWithGivenNodePath.push_back(currentEdge);
 
-			positionEdge++;
+		for (auto currentEdge : edgesWithGivenNodePath) {
+			_edges.remove(currentEdge);
+			delete currentEdge;
 		}
 	}
 };

@@ -286,14 +286,37 @@ SCENARIO ( "Graph edges management" ) {
 			g.addEdge(1,2, 51.0);
 			g.addEdge(1,2, 132.0);
 			g.addEdge(1,2, 47.0);
-			g.removeEdgesByWeight(51.0);
 			g.removeEdgesByWeight(47.0);
-			g.removeEdgesByWeight(132.0);
 		
 			THEN ( "I shouldn't find it" ) {
-				REQUIRE( g.searchEdgeByWeight(132.0) == NULL );
-				REQUIRE( g.searchEdgeByWeight(51.0) == NULL );
+				REQUIRE( g.searchEdgeByWeight(132.0) != NULL );
+				REQUIRE( g.searchEdgeByWeight(51.0) != NULL );
 				REQUIRE( g.searchEdgeByWeight(47.0) == NULL );
+			}
+		}
+
+		WHEN ( "I add an edge with a given node path and search for it" ) {
+			g.addEdge(1,2, 51.0);
+			g.addEdge(2,3, 132.0);
+			g.addEdge(3,2, 47.0);
+
+			THEN ( "I should find it" ) {
+				REQUIRE( g.searchEdgeByNodePath(1,2) != NULL );
+				REQUIRE( g.searchEdgeByNodePath(2,3) != NULL );
+				REQUIRE( g.searchEdgeByNodePath(3,2) != NULL );
+			}
+		}
+
+		WHEN ( "I add an edge with a given node path, remove it and search for it" ) {
+			g.addEdge(1,2, 51.0);
+			g.addEdge(2,3, 132.0);
+			g.addEdge(3,2, 47.0);
+			g.removeEdgeByNodePath(2,3);
+
+			THEN ( "I shouldn't find it" ) {
+				REQUIRE( g.searchEdgeByNodePath(1,2) != NULL );
+				REQUIRE( g.searchEdgeByNodePath(2,3) == NULL );
+				REQUIRE( g.searchEdgeByNodePath(3,2) != NULL );
 			}
 		}
 	}
