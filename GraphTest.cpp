@@ -371,9 +371,13 @@ SCENARIO ( "Djikstra Shortest Path Algorithm" ) {
 		Graph g;
 		for (int i = 1; i <= 4; i++) g.addNode(i);
 		g.addEdge(1,2,24);
+		g.addEdge(2,1,24);
 		g.addEdge(1,4,20);
+		g.addEdge(4,1,20);
 		g.addEdge(3,1,3);
+		g.addEdge(1,3,3);
 		g.addEdge(4,3,12);
+		g.addEdge(3,4,12);
 		
 		WHEN ( "I look for the shortest path of a given node" ) {
 			auto shortestDistances = g.djikstra(1);

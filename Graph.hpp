@@ -374,8 +374,8 @@ public:
 		costs.push(make_pair(0, source));
 
 		while (!costs.empty()) {
-			int nodeId = costs.top().second;
 			int dis = costs.top().first;
+			int nodeId = costs.top().second;
 			costs.pop();
 
 			if (dis > distances[nodeId]) continue;
