@@ -286,17 +286,7 @@ public:
 		return searchNodeById(nodeId) != NULL;
 	}
 
-	void addEdgeByValue(llint sourceValue, llint destinationValue, double weight) {
-		const GraphNode* sourceNode = searchNodeByValue(sourceValue);
-		const GraphNode* destinationNode = searchNodeByValue(destinationValue);
-
-		if ( ( sourceNode != NULL ) && ( destinationNode != NULL ) ) {
-			GraphEdge* newEdge = new GraphEdge(sourceNode, destinationNode, weight);
-			_edges.push_back(newEdge);
-		}
-	}
-
-	void addEdgeById(ullint sourceId, ullint destinationId, double weight) {
+	void addEdge(ullint sourceId, ullint destinationId, double weight) {
 		const GraphNode* sourceNode = searchNodeById(sourceId);
 		const GraphNode* destinationNode = searchNodeById(destinationId);
 
@@ -306,18 +296,16 @@ public:
 		}
 	}
 
-	void removeEdgesByWeight(double weight) {
-		list<GraphEdge*>::iterator positionEdge = _edges.begin();
-		
-		while (positionEdge != _edges.end()) {
-			if ( (*positionEdge)->getWeight() == weight ) {
-				delete *positionEdge;
-				*positionEdge = NULL;
-				_edges.erase(positionEdge);
-			}
+	GraphEdge* searchEdgeByWeight(double weight) {
+		for (GraphEdge* currentEdge : _edges)
+			if (currentEdge->getWeight() == weight)
+				return currentEdge;
 
-			positionEdge++;
-		}
+		return NULL;
+	}
+
+	void removeEdgesByWeight(double weight) {
+		
 	}
 
 	void removeEdgesByNodeValuePath(llint sourceValue, llint destinationValue) {
