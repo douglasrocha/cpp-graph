@@ -292,7 +292,7 @@ public:
 		const GraphNode* destinationNode = searchNodeById(destinationId);
 
 		if ( ( sourceNode != NULL ) && ( destinationNode != NULL ) ) {
-			GraphEdge* newEdge = new GraphEdge(sourceNode, destinationNode, weight);
+			auto newEdge = new GraphEdge(sourceNode, destinationNode, weight);
 			_edges.push_back(newEdge);
 		}
 	}
@@ -382,8 +382,8 @@ public:
 
 			for (auto currentEdge : getEdgesWhereNodeIsSource(nodeId)) {
 				auto newWeight = dis + currentEdge->getWeight();
-				auto oldWeight = distances[currentEdge->getDestination()->getId()];
 				auto destinationId = currentEdge->getDestination()->getId();
+				auto oldWeight = distances[destinationId];
 
 				if (nodeId == source - 1 || newWeight < oldWeight) {
 					distances[destinationId] = newWeight;
