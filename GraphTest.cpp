@@ -321,3 +321,27 @@ SCENARIO ( "Graph edges management" ) {
 		}
 	}
 }
+
+SCENARIO ( "Cleaning Graph" ) {
+	GIVEN ( "A graph with some nodes and edges" ) {
+		Graph g;
+		for (int i = 0; i < 1000; i++) g.addNode(i*100);
+		for (int i = 0; i < 100; i++) g.addEdge(i+1, i+2, i*12);
+
+		WHEN ( "I count the number of nodes and edges" ) {
+			THEN ( "The number of elements should be the same that I created" ) {
+				REQUIRE( g.getNumberOfNodes() == 1000 );
+				REQUIRE( g.getNumberOfEdges() == 100 );
+			}
+		}
+
+		WHEN ( "I clear the graph" ) {
+			g.clear();
+
+			THEN ( "The numbers of elements of the graph should be zero" ) {
+				REQUIRE( g.getNumberOfNodes() == 0 );
+				REQUIRE( g.getNumberOfEdges() == 0 );
+			}
+		}
+	}
+}
