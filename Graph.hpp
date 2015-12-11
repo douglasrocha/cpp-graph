@@ -32,8 +32,8 @@ public:
 		setHasParentId(false);
 		setParentId(0);
 	}
-	
-	~GraphNode() { 
+
+	~GraphNode() {
 	}
 
 
@@ -67,8 +67,8 @@ private:
 	double _weight;
 
 public:
-	GraphEdge(const GraphNode* source, const GraphNode* destination, 
-			double weight) {
+	GraphEdge(const GraphNode* source, const GraphNode* destination,
+		double weight) {
 		_source = source;
 		_destination = destination;
 		_weight = weight;
@@ -94,9 +94,9 @@ class Graph {
 
 protected:
 	//----- Attributes
-	list<GraphNode*> _nodes;
-	list<GraphEdge*> _edges;
-	list<GraphEdge*> _pathEdges;
+	map<int, GraphNode*> _nodes;
+	map<ullint, list<GraphEdge*>> _edgesBySource;
+	map<ullint, list<GraphEdge*>> _edgesByDestination;
 
 	bool _isDirected;
 	ullint _id;
@@ -116,28 +116,21 @@ public:
 	//----- Is Directed
 	bool getIsDirected() { return _isDirected; }
 	void setIsDirected(bool isDirected) { _isDirected = isDirected; }
-	
+
 
 	//----- Methods
 	void clear() {
 		// Clear Edges
-		list<GraphEdge*>::iterator positionEdge = _edges.begin();
-
-		while (positionEdge != _edges.end()) {
-			delete *positionEdge;
-			*positionEdge = NULL;
-			positionEdge++;
-		}
-
-		_edges.clear();
+		for (auto pairEdgeSource : _edgesBySource) 
+			for (auto edgePtr : pairEdgeSource.second)
+				delete edgePtr;
+			
+		_edgesBySource.clear();
+		_edgesByDestination.clear();
 
 		// Clear Nodes
-		list<GraphNode*>:: iterator positionNode = _nodes.begin();
-		while (positionNode != _nodes.end()) {
-			delete *positionNode;
-			*positionNode = NULL;
-			positionNode++;
-		}
+		for (auto pairNode : _nodes)
+			delete pairNode.second;
 
 		_nodes.clear();
 	}
@@ -151,52 +144,30 @@ public:
 	}
 
 	ullint getNumberOfEdges() {
-		return _edges.size();
+		return _edgesBySource.size();
 	}
 
 	void addNode(llint value) {
 		_id++;
 		GraphNode* node = new GraphNode(_id, value);
-		_nodes.push_back(node);
+		_nodes[_id] = node;
 	}
 
 	void removeNodeById(ullint nodeId) {
-		list<GraphEdge*>::iterator positionEdge = _edges.begin();
-		const GraphNode* source;
-		const GraphNode* destination;
+		for (auto currentEdge : _edgesBySource[nodeId])
+			delete currentEdge;
 
-		// Remove edges where node is involved
-		while (positionEdge != _edges.end()) {
-			source = (*positionEdge)->getSource();
-			destination = (*positionEdge)->getDestination();
-			
-			if ( ( source->getId() == nodeId ) 
-				|| ( destination->getId() == nodeId ) ) {
-	
-				delete *positionEdge;
-				*positionEdge = NULL;
-				_edges.erase(positionEdge);
-			}
+		for (auto currentEdge : _edgesByDestination[nodeId])
+			delete currentEdge;
 
-			positionEdge++;
-		}
-
-		source = NULL;
-		destination = NULL;
+		_edgesBySource.clear();
+		_edgesByDestination.clear();
+		_edgesBySource.erase(nodeId);
+		_edgesByDestination.erase(nodeId);
 
 		// Remove nodes with the given id
-		list<GraphNode*>:: iterator positionNode = _nodes.begin();
-
-		while (positionNode != _nodes.end()) {
-			if ( (*positionNode)->getId() == nodeId ) {
-				delete *positionNode;
-				*positionNode = NULL;
-				_nodes.erase(positionNode);
-				break;
-			}
-
-			positionNode++;
-		}
+		delete _nodes[nodeId];
+		_nodes.erase(nodeId);
 	}
 
 	bool removeNodeByValue(llint nodeValue) {
@@ -205,27 +176,27 @@ public:
 			removeNodeById(node->getId());
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	bool removeNodesByValue(llint nodeValue) {
 		auto isSuccess = false;
-		
+
 		// Not the best solution, but I will rarely use this
 		while (removeNodeByValue(nodeValue))
 			isSuccess = true;
-		
+
 		return isSuccess;
 	}
 
 	llint getNodesLeastValue() {
 		llint leastValue = LLONG_MAX;
 
-		for (GraphNode* currentNode : _nodes)
-			if (currentNode->getValue() < leastValue)
-				leastValue = currentNode->getValue();
-				
+		for (auto currentNode : _nodes)
+			if (currentNode.second->getValue() < leastValue)
+				leastValue = currentNode.second->getValue();
+
 		return leastValue;
 	}
 
@@ -237,10 +208,10 @@ public:
 	llint getNodesMaxValue() {
 		llint maxValue = LLONG_MIN;
 
-		for (GraphNode* currentNode : _nodes)
-			if (currentNode->getValue() > maxValue)
-				maxValue = currentNode->getValue();
-				
+		for (auto currentNode : _nodes)
+			if (currentNode.second->getValue() > maxValue)
+				maxValue = currentNode.second->getValue();
+
 		return maxValue;
 	}
 
@@ -251,14 +222,12 @@ public:
 
 	GraphNode* searchNodeByValue(llint nodeValue) {
 		GraphNode* nodeOutput = NULL;
-		list<GraphNode*>::iterator positionNode = _nodes.begin();
 
-		while (positionNode != _nodes.end()) {
-			if ( (*positionNode)->getValue() == nodeValue ) {
-				nodeOutput = (*positionNode);
+		for (auto pairNode : _nodes) {
+			if (pairNode.second->getValue() == nodeValue) {
+				nodeOutput = pairNode.second;
 				break;
 			}
-			positionNode++;
 		}
 
 		return nodeOutput;
@@ -266,14 +235,11 @@ public:
 
 	GraphNode* searchNodeById(ullint nodeId) {
 		GraphNode* nodeOutput = NULL;
-		list<GraphNode*>::iterator positionNode = _nodes.begin();
 
-		while (positionNode != _nodes.end()) {
-			if ( (*positionNode)->getId() == nodeId ) {
-				nodeOutput = (*positionNode);
-				break;
+		for (auto pairNode : _nodes) {
+			if (pairNode.second->getId() == nodeId) {
+				nodeOutput = pairNode.second;
 			}
-			positionNode++;
 		}
 
 		return nodeOutput;
@@ -288,88 +254,48 @@ public:
 	}
 
 	void addEdge(ullint sourceId, ullint destinationId, double weight) {
-		const GraphNode* sourceNode = searchNodeById(sourceId);
-		const GraphNode* destinationNode = searchNodeById(destinationId);
+		auto sourceNode = _nodes[sourceId];
+		auto destinationNode = _nodes[destinationId];
 
-		if ( ( sourceNode != NULL ) && ( destinationNode != NULL ) ) {
-			auto newEdge = new GraphEdge(sourceNode, destinationNode, weight);
-			_edges.push_back(newEdge);
-		}
+		auto newEdge = new GraphEdge(sourceNode, destinationNode, weight);
+		_edgesBySource[sourceId].push_back(newEdge);
+		_edgesByDestination[destinationId].push_back(newEdge);
 	}
 
 	GraphEdge* searchEdgeByWeight(double weight) {
-		for (GraphEdge* currentEdge : _edges)
-			if (currentEdge->getWeight() == weight)
-				return currentEdge;
+		for (auto currentEdgePair : _edgesBySource)
+			for (auto currentEdge : currentEdgePair.second)
+				if (currentEdge->getWeight() == weight)
+					return currentEdge;
 
 		return NULL;
 	}
 
 	GraphEdge* searchEdgeByNodePath(ullint sourceId, ullint destinationId) {
-		for (auto currentEdge : _edges)
-			if (currentEdge->getSource()->getId() == sourceId
-				&& currentEdge->getDestination()->getId() == destinationId)
+		for (auto currentEdge : _edgesBySource[sourceId])
+			if (currentEdge->getDestination()->getId() == destinationId)
 				return currentEdge;
 
 		return NULL;
 	}
 
-	void removeEdgesByWeight(double weight) {
-		vector<GraphEdge*> edgesWithGivenWeight;
-
-		for (auto currentEdge : _edges)
-			if (currentEdge->getWeight() == weight)
-				edgesWithGivenWeight.push_back(currentEdge);
-
-		for (auto currentEdge : edgesWithGivenWeight) {
-			_edges.remove(currentEdge);
-			delete currentEdge;
-		}
+	list<GraphEdge*>& getEdgesWhereNodeIsSource(ullint nodeId) {
+		return _edgesBySource[nodeId];
 	}
 
-	void removeEdgeByNodePath(ullint sourceId, ullint destinationId) {
-		vector<GraphEdge*> edgesWithGivenNodePath;
-
-		for (auto currentEdge : _edges)
-			if (currentEdge->getSource()->getId() == sourceId
-				&& currentEdge->getDestination()->getId() == destinationId)
-				edgesWithGivenNodePath.push_back(currentEdge);
-
-		for (auto currentEdge : edgesWithGivenNodePath) {
-			_edges.remove(currentEdge);
-			delete currentEdge;
-		}
-	}
-
-	vector<GraphEdge*> getEdgesWhereNodeIsSource(ullint nodeId) {
-		vector<GraphEdge*> destinations;
-
-		for (auto currentEdge : _edges)
-			if (currentEdge->getSource()->getId() == nodeId)
-				destinations.push_back(currentEdge);
-
-		return destinations;
-	}
-
-	vector<GraphEdge*> getEdgesWhereNodeIsDestination(ullint nodeId) {
-		vector<GraphEdge*> sources;
-		
-		for (auto currentEdge : _edges)
-			if (currentEdge->getDestination()->getId() == nodeId)
-				sources.push_back(currentEdge);
-
-		return sources;
+	list<GraphEdge*>& getEdgesWhereNodeIsDestination(ullint nodeId) {
+		return _edgesByDestination[nodeId];
 	}
 
 	typedef pair<int, int> pp;
-	map<ullint, llint> djikstra(int source) {
+	map<ullint, llint> dijkstra(int source) {
 		priority_queue<pp, vector<pp>, greater<pp>> costs;
 		map<ullint, llint> distances;
-		
+
 		for (auto currNode : _nodes) {
-			distances[currNode->getId()] = LLONG_MAX;
+			distances[currNode.second->getId()] = INT_MAX;
 		}
-		
+
 		distances[source] = 0;
 		costs.push(make_pair(0, source));
 
@@ -380,12 +306,13 @@ public:
 
 			if (dis > distances[nodeId]) continue;
 
-			for (auto currentEdge : getEdgesWhereNodeIsSource(nodeId)) {
+			auto nodeEdges = getEdgesWhereNodeIsSource(nodeId);
+			for (auto currentEdge : nodeEdges) {
 				auto newWeight = dis + currentEdge->getWeight();
 				auto destinationId = currentEdge->getDestination()->getId();
 				auto oldWeight = distances[destinationId];
 
-				if (nodeId == source - 1 || newWeight < oldWeight) {
+				if (newWeight < oldWeight) {
 					distances[destinationId] = newWeight;
 					costs.push(make_pair(newWeight, destinationId));
 				}
@@ -394,5 +321,4 @@ public:
 
 		return distances;
 	}
-
 };
